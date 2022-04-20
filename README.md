@@ -2,7 +2,7 @@
 
 ## project description
 
-This project is a dynamic landing page i implemented all the **javaScript** code and adjust some **HTML** code.
+This project is a dynamic landing page I implemented all the **javaScript** code and adjust some **HTML** code.
 I built navigation dynamically as an unordered list.
 Started with an empty ul and dynamically built navigation using the **appendChild()** built-in function, and **innerHTML** and **for of loop**.
 
