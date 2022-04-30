@@ -4,12 +4,19 @@ const sections = document.querySelectorAll('section'); //get a list of all secti
 
 
 // Building the navigation menu
-for (let section of sections) {
-    let listItemElement = document.createElement('li'); //creating a new object <li></li>
-    listItemElement.innerHTML = `<a href="#${section.getAttribute('id')}" onclick="myFunction()" data-nav=${section.getAttribute('id')} class="menu__link">${section.getAttribute('data-nav')}</a>`; //Adding an ancor inside the <li></li>
-    navBarList.appendChild(listItemElement) // appending the <li></li> to the navbar 
+function creatingListItem(section) { //creating list and add anchor inside it 
+    let listItemElement = document.createElement('li');
+    listItemElement.innerHTML = `<a href="#${section.getAttribute('id')}" data-nav=${section.getAttribute('id')} class="menu__link">${section.getAttribute('data-nav')}</a>`;
+    return listItemElement;
 }
 
+function createAndAppendlist(section, navList) { //creat and append list
+    navList.appendChild(creatingListItem(section))
+}
+
+for (let section of sections) {
+    createAndAppendlist(section, navBarList);
+}
 //Adding an active state on the link when it is clicked
 let links = document.querySelectorAll('nav a');
 links.forEach(link => {
@@ -20,25 +27,37 @@ links.forEach(link => {
 });
 
 // Adding functionality to distinguish the section in view
-window.onscroll = () => {
-    for (let section of sections) {
-        let sectionPlace = section.getBoundingClientRect(); //store the section place in the veiw port in a variable 
-        if (sectionPlace.top >= -400 && sectionPlace.top <= 150) { //check weather the section is on the view port or not
-            section.classList.add('your-active-class'); //making the section active
-        } else {
-            section.classList.remove('your-active-class'); //disactive the section 
-        }
-    }
+function removeActiveClass() {
+    sections.forEach(section => {
+        section.classList.remove('your-active-class');
+    })
 }
 
+function addActiveClass(id) {
+    let selector = `section#${id}`;
+    document.querySelector(selector).classList.add('your-active-class');
+}
+
+window.addEventListener('scroll', () => {
+    let scrollPosition = document.documentElement.scrollTop;
+    sections.forEach(section => {
+        if (scrollPosition >= section.offsetTop - section.offsetHeight * 0.25 && scrollPosition < section.offsetTop + section.offsetHeight) {
+            let currentId = section.getAttribute('id');
+            removeActiveClass();
+            addActiveClass(currentId);
+        }
+    });
+});
 //Adding the functionality to scroll to sectionst
+function smoothScrolling(element) {
+    element.scrollIntoView({
+        behavior: "smooth",
+        block: 'start'
+    });
+}
+
 navBarList.addEventListener("click", event => {
-    event.preventDefault(); //prevent the default scrolling behavior
-    if (event.target.getAttribute('data-nav')) {
-        document
-            .getElementById(`${event.target.getAttribute('data-nav')}`)
-            .scrollIntoView({
-                behavior: "smooth" //smothing the scrolling
-            });
-    }
+    event.preventDefault();
+    let sec = document.getElementById(`${event.target.getAttribute('data-nav')}`);
+    smoothScrolling(sec);
 });
